@@ -38,26 +38,27 @@ def dock(rover:Rover):
         
         if dock_x is not 0:
             
-            if (drift) > 25:
+            if (drift) > 50:
                 cv2.putText(masked_image, "Move Left", (50, 50), label_font, 0.5, (255, 0, 0), 2)
                 drift_counter['L'] = drift_counter['L'] + 1
                 if drift_counter['L'] > 5:
                     drift_counter['L'] = 0
                     align(rover, (K*drift))
 
-            elif (drift) < -25:
+            elif (drift) < -50:
                 cv2.putText(masked_image, "Move Right", (50, 50), label_font, 0.5, (255, 0, 0), 2)
                 drift_counter['R'] = drift_counter['R'] + 1
                 if drift_counter['R'] > 5:
                     drift_counter['R'] = 0
                     align(rover, (-K*drift))
 
-            elif -25 < (drift) < 25 :
+            elif -50 < (drift) < 50 :
                 cv2.putText(masked_image, "Move Forward", (50, 50), label_font, 0.5, (255, 0, 0), 2)
                 drift_counter['F'] = drift_counter['F'] + 1
                 if drift_counter['F'] > 5:
                     drift_counter['F'] = 0
-                    rover.moveForward(speed=2)
+                    # rover.moveForward(speed=2)
+                    rover.changeVehicleMode('HOLD')
         
         else:
             print("Drone not detected")
