@@ -1,14 +1,13 @@
-from .Rover import *
+from .Rover import Rover
 from src.dock import dock
 
-
-def mainStart(serial=None, connection=None):
+def main_start(serial=None, connection=None):
     if serial != None:
         print(serial)
-        rover = Rover(roverSerial=serial,connection=connection)
+        rover = Rover(rover_serial=serial, connection=connection)
         dock(rover=rover)
 
 if __name__ == '__main__':
     pass
 else:
-    mainStart()
+    main_start()

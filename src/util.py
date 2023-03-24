@@ -2,8 +2,7 @@ import numpy as np
 import sys
 import os
 
-
-def createDataMap(array):
+def create_data_map(array):
     outlier = []
     dict = {}
     mean_x = (np.average(array[0]))

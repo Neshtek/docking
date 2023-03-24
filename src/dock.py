@@ -1,16 +1,16 @@
 import cv2
-from .util import keyboard_shutdown
 import math
-from .Camera import camera
-import time
-from .Rover import *
+from time import sleep
+from .Rover import Rover
 
 length = 45
 breadth = 30
 
 def align(rover:Rover, change):
     rover.changeYaw(angle=math.radians(90), speed=0.1)
+    sleep(2)
     rover.moveForward_L(speed=0.2,d=2)
+    sleep(2)
     rover.changeYaw(angle=-math.radians(90), speed=0.1)
 
 def dock(rover:Rover):
