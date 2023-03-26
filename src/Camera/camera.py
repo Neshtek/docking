@@ -56,9 +56,9 @@ class Camera:
             if len(data[0]) > 0:
                 avg_x = int(round(np.average(data[0])))
                 avg_y = int(round(np.average(data[1])))
-                copy = cv2.circle(copy, (avg_x, avg_y), radius=10, color=(0, 255, 0), thickness=-1)
+                src = cv2.circle(src, (avg_x, avg_y), radius=10, color=(0, 255, 0), thickness=-1)
                 
-        return avg_x, copy
+        return avg_x, src
     
 if __name__== "__main__":
     pass

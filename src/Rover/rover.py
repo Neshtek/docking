@@ -79,13 +79,13 @@ class Rover:
         while True:
             change = abs(current - initial)
             if change >= dist:
-                break
+                return
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), dist, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0))
             system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
             current = system.x
-            print('current head', current)
-            print('change head', change)
+            #print('current head', current)
+            #print('change head', change)
             
     def move_backward_dist(self, speed, dist=0):
         system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
@@ -98,13 +98,13 @@ class Rover:
         while True:
             change = abs(current - initial)
             if change >= dist:
-                break
+                return
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), dist, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
             system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
             current = system.x
-            print('current head', current)
-            print('change head', change)
+            #print('current head', current)
+            #print('change head', change)
         
     def current_yaw(self):
         system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
@@ -144,7 +144,7 @@ class Rover:
             else:
                 final_change = abs(current - initial)
             
-            if final_change >= math.degrees(angle):
+            if final_change >= math.degrees(abs(angle)):
                 return
             
             print('initial head', initial)

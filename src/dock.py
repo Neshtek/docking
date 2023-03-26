@@ -3,13 +3,19 @@ import math
 from time import sleep
 from .Rover import Rover
 
-def align(rover:Rover, change):
-    rover.change_yaw(angle=math.radians(90), speed=0.1)
-    sleep(2)
-    rover.move_forward_dist(speed=0.2, dist=2)
-    sleep(2)
-    rover.change_yaw(angle=math.radians(-90), speed=0.1)
-
+def align(rover:Rover, turn, drift):
+    print('Changing Yaw')
+    sleep(1)
+    rover.change_yaw(angle=math.radians(turn * 90), speed=0.1)
+    print('Yaw changed')
+    sleep(1)
+    print('moving forward')
+    rover.move_forward_dist(speed=1, dist=2)
+    sleep(1)
+    print('anti-clockwise')
+    rover.change_yaw(angle=math.radians(turn * (-90)), speed=0.1)
+    sleep(1)
+    
 def dock(rover:Rover):
     label_font = cv2.FONT_HERSHEY_SIMPLEX
     rover.setup_arm()
@@ -31,19 +37,19 @@ def dock(rover:Rover):
         K = 1
         
         if dock_x is not 0:
-            if drift > 50:
+            if drift < -50:
                 cv2.putText(masked_image, "Move Left", (50, 50), label_font, 0.5, (255, 0, 0), 2)
                 drift_counter['L'] = drift_counter['L'] + 1
                 if drift_counter['L'] > 5:
                     drift_counter['L'] = 0
-                    align(rover, (K * drift))
+                    align(rover, -1, (-K * drift))
 
-            elif drift < -50:
+            elif drift > 50:
                 cv2.putText(masked_image, "Move Right", (50, 50), label_font, 0.5, (255, 0, 0), 2)
                 drift_counter['R'] = drift_counter['R'] + 1
                 if drift_counter['R'] > 5:
                     drift_counter['R'] = 0
-                    align(rover, (-K * drift))
+                    align(rover, 1, (K * drift))
 
             elif -50 < drift < 50 :
                 cv2.putText(masked_image, "Move Forward", (50, 50), label_font, 0.5, (255, 0, 0), 2)
