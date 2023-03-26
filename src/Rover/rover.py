@@ -128,12 +128,12 @@ class Rover:
             current = math.degrees(system.yaw)
             
             if final > 180:
-            if current > 0:
-                change = current - initial
-                final_change = change
-            else: 
-                neg_change = 180 + current
-                final_change = change + neg_change
+                if current > 0:
+                    change = current - initial
+                    final_change = change
+                else: 
+                    neg_change = 180 + current
+                    final_change = change + neg_change
             elif final < -180:
                 if current < 0:
                     change = initial - current
