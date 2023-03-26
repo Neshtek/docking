@@ -4,7 +4,7 @@ from ..util import create_data_map
 
 class Camera:
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(2)
         # check/change parameter before testing
 
     def capture(self):

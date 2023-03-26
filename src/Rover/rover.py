@@ -1,5 +1,6 @@
 from pymavlink import mavutil
-import math
+import math, time
+from ..Camera import Camera
 
 class Rover:
     def __init__(self, rover_serial, connection):
@@ -12,6 +13,7 @@ class Rover:
         self.serial = rover_serial
         self.vehicle = vehicle
         self.working_status = False
+        self.camera = Camera()
         # self.front_edge = Ultrasonic(21,20)
         # self.back_edge = Ultrasonic(7,8)
         self.drone_serial = "ERROR000000000"
@@ -33,6 +35,8 @@ class Rover:
         print(msg)
 
     def setup_arm(self):
+        print('Arming...')
+        time.sleep(1)
         self.vehicle.mav.command_long_send(self.vehicle.target_system, self.vehicle.target_component,
                                      mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, 1, 0, 0, 0, 0, 0, 0)
 
@@ -124,26 +128,28 @@ class Rover:
             current = math.degrees(system.yaw)
             
             if final > 180:
-                if current > 0:
-                    change = current - initial
-                else: 
-                    neg_change = 180 + current
-                    change += neg_change
+            if current > 0:
+                change = current - initial
+                final_change = change
+            else: 
+                neg_change = 180 + current
+                final_change = change + neg_change
             elif final < -180:
                 if current < 0:
                     change = initial - current
+                    final_change = change
                 else:
                     neg_change = 180 - current
-                    change += neg_change
+                    final_change = change + neg_change
             else:
-                change = abs(current - initial)
+                final_change = abs(current - initial)
             
-            if change >= math.degrees(angle):
-                break
+            if final_change >= math.degrees(angle):
+                return
             
             print('initial head', initial)
             print('current head', current)
-            print('change head', change)
+            print('change head', final_change)
    
     def update_rover(self):
         pos = self.vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)

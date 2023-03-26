@@ -3,15 +3,12 @@ import math
 from time import sleep
 from .Rover import Rover
 
-length = 45
-breadth = 30
-
 def align(rover:Rover, change):
-    rover.change_yaw(angle=math.radians(90), speed=0)
+    rover.change_yaw(angle=math.radians(90), speed=0.1)
     sleep(2)
     rover.move_forward_dist(speed=0.2, dist=2)
     sleep(2)
-    rover.change_yaw(angle=math.radians(-90), speed=0)
+    rover.change_yaw(angle=math.radians(-90), speed=0.1)
 
 def dock(rover:Rover):
     label_font = cv2.FONT_HERSHEY_SIMPLEX
@@ -25,7 +22,6 @@ def dock(rover:Rover):
    
     while True:
         dock_x, masked_image = rover.camera.capture()
-        masked_image = cv2.rotate(masked_image, cv2.ROTATE_180)
         #cv2.imshow('OG', src_image)
         frame_center_x = round(masked_image.shape[1] / 2)
         frame_center_y = round(masked_image.shape[0] / 2)
