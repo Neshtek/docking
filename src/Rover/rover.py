@@ -118,12 +118,13 @@ class Rover:
         initial = math.degrees(system.yaw)
         final = initial + math.degrees(angle)
         current = initial
+        sign = ((angle)/(abs(angle)))
         # self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
         #                 self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b100111100111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, angle, 0))
         
         while True:
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b010111110111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, 0, 0.35))
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b010111110111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, 0, (0.35 * sign)))
             
             system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
             current = math.degrees(system.yaw)
