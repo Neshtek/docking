@@ -6,20 +6,21 @@ from .Rover import Rover
 def align(rover:Rover, turn, drift):
     print('Changing Yaw')
     sleep(1)
-    rover.change_yaw(angle=math.radians(turn * 90), speed=0.1)
+    rover.change_yaw(angle=math.radians(turn * 90), speed=0)
     print('Yaw changed')
     sleep(1)
     print('moving forward')
-    rover.move_forward_dist(speed=1, dist=2)
+    rover.move_forward_dist(speed=0.05, dist=0.1)
     sleep(1)
     print('anti-clockwise')
-    rover.change_yaw(angle=math.radians(turn * (-90)), speed=0.1)
+    rover.change_yaw(angle=math.radians(turn * (-90)), speed=0)
     sleep(1)
     
 def dock(rover:Rover):
     label_font = cv2.FONT_HERSHEY_SIMPLEX
     rover.setup_arm()
     rover.change_vehicle_mode('GUIDED')
+    #return
     drift_counter = {
         'L': 0,
         'R': 0,

@@ -31,6 +31,7 @@ class Rover:
             self.vehicle.target_system,
             mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
             mode_id)
+        print("here")
         msg = self.vehicle.recv_match(type='COMMAND_ACK', blocking=True)
         print(msg)
 
@@ -122,7 +123,7 @@ class Rover:
         
         while True:
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b100111100111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, angle, 0))
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b010111110111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, 0, 0.35))
             
             system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
             current = math.degrees(system.yaw)
