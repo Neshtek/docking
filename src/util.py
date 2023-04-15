@@ -4,6 +4,7 @@ import os
 
 def create_data_map(array):
 #     start_time = time.time()
+    data = array
     median = np.median(data)
     mad = np.median(np.abs(data - median))
     threshold = 3 * mad

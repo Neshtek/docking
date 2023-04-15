@@ -10,7 +10,7 @@ def align(rover:Rover, turn, drift):
     print('Yaw changed')
     sleep(1)
     print('moving forward')
-    rover.move_forward_dist(speed=0.05, dist=0.1)
+    rover.move_forward_dist(speed=0.25, dist=0.1)
     sleep(1)
     print('anti-clockwise')
     rover.change_yaw(angle=math.radians(turn * (-90)), speed=0)

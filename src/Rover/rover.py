@@ -69,7 +69,7 @@ class Rover:
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
                         self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b11011100111), 0, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
     
-    def move_forward_dist(self, speed, dist=0):
+    def move_forward_dist(self, speed, dist):
         system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
 
         initial = system.x
@@ -80,32 +80,44 @@ class Rover:
         while True:
             change = abs(current - initial)
             if change >= dist:
+                self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                 return
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), dist, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0))
-            system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
-            current = system.x
-            #print('current head', current)
-            #print('change head', change)
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000111), dist, 0, 0, speed, 0, 0, 0, 0, 0, 0, 0))
             
-    def move_backward_dist(self, speed, dist=0):
+            #if self.front_edge.check_drive_ok() == False:
+            #    self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
+            #            self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+            #    return
+                
+            system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
+            current = system.x
+            
+    def move_backward_dist(self, speed, dist):
         system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
 
         initial = system.x
         current = initial
         self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), dist, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b11011100111), 0, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
         
         while True:
             change = abs(current - initial)
             if change >= dist:
+                self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                 return
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), dist, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b11011100111), 0, 0, 0, -(speed), 0, 0, 0, 0, 0, 0, 0))
+
+            if self.back_edge.check_drive_ok() == False:
+                self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED, int(0b110111000110), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                return
+
             system = self.vehicle.recv_match(type='LOCAL_POSITION_NED', blocking=True)
             current = system.x
-            #print('current head', current)
-            #print('change head', change)
         
     def current_yaw(self):
         system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
@@ -113,18 +125,18 @@ class Rover:
         return angle
 
     def change_yaw(self, angle, speed=0):
-        print(angle) # Correct angle by adding abs difference in 180 degrees
+        #print(angle) # Correct angle by adding abs difference in 180 degrees
         system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
         initial = math.degrees(system.yaw)
         final = initial + math.degrees(angle)
         current = initial
-        sign = ((angle)/(abs(angle)))
+        change = 0
         # self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
         #                 self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b100111100111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, angle, 0))
         
         while True:
             self.vehicle.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, self.vehicle.target_system,
-                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b010111110111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, 0, (0.35 * sign)))
+                        self.vehicle.target_component, mavutil.mavlink.MAV_FRAME_BODY_OFFSET_NED , int(0b100111100111), 0, 0, 0, (speed), 0, 0, 0, 0, 0, (angle), 0))
             
             system = self.vehicle.recv_match(type='ATTITUDE', blocking=True)
             current = math.degrees(system.yaw)
@@ -132,26 +144,24 @@ class Rover:
             if final > 180:
                 if current > 0:
                     change = current - initial
-                    final_change = change
                 else: 
                     neg_change = 180 + current
-                    final_change = change + neg_change
+                    change += neg_change
             elif final < -180:
                 if current < 0:
                     change = initial - current
-                    final_change = change
                 else:
                     neg_change = 180 - current
-                    final_change = change + neg_change
+                    change += neg_change
             else:
-                final_change = abs(current - initial)
+                change = abs(current - initial)
             
-            if final_change >= math.degrees(abs(angle)):
-                return
+            if change >= (angle):
+                break
             
             print('initial head', initial)
             print('current head', current)
-            print('change head', final_change)
+            print('change head', change)
    
     def update_rover(self):
         pos = self.vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
